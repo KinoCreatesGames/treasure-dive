@@ -53,6 +53,13 @@ class Level extends dn.Process {
     invalidated = true;
   }
 
+  // Level Collisions
+
+  public function hasAnyCollision(x:Int, y:Int) {
+    // TODO: Add in the collision code
+    return false;
+  }
+
   function render() {
     // Placeholder level render
     root.removeChildren();

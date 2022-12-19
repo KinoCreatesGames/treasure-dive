@@ -8,4 +8,8 @@ class BaseEnt extends Entity {
   public function takeDamage(value:Int = 1) {
     this.health -= value;
   }
+
+  public function isDead() {
+    return this.health <= 0;
+  }
 }
