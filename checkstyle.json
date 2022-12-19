@@ -65,7 +65,7 @@
       "type": "MethodLength",
       "props": {
         "severity": "ERROR",
-        "max": 50,
+        "max": 80,
         "ignoreEmptyLines": true
       }
     },

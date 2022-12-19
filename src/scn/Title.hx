@@ -25,7 +25,7 @@ class Title extends dn.Process {
 
   public function new() {
     super(Game.ME);
-    ca = Main.ME.controller.createAccess("title");
+    ca = Main.ME.controller.createAccess('title');
     ca.setLeftDeadZone(0.2);
     ca.setRightDeadZone(0.2);
     events = new SceneEvents();
@@ -50,7 +50,7 @@ class Title extends dn.Process {
 
   public function setupTitle() {
     title = new h2d.Text(Assets.fontLarge, root);
-    title.text = Lang.t._('Distactia');
+    title.text = Lang.t._('Treasure Dive');
     title.textColor = 0xffffff;
     setupTitleWindow();
   }
