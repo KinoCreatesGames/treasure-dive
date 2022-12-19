@@ -168,4 +168,16 @@ class Level extends dn.Process {
       render();
     }
   }
+
+  override function onDispose() {
+    player.dispose();
+    for (collectible in collectibles) {
+      collectible.destroy();
+    }
+
+    for (enemy in enemies) {
+      enemy.destroy();
+    }
+    // super.onDispose();
+  }
 }
