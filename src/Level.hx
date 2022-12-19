@@ -1,3 +1,10 @@
+import hxd.Timer;
+import en.Enemy;
+import en.Collectible;
+import scn.GameOver;
+import en.Player;
+import scn.Pause;
+
 class Level extends dn.Process {
   var game(get, never):Game;
 
@@ -35,9 +42,18 @@ class Level extends dn.Process {
 
   var invalidated = true;
 
+  public var scnPause:Pause;
+  public var collectibles:Group<Collectible>;
+  public var enemies:Group<Enemy>;
+  public var player:Player;
+
+  public var timer:Float;
+
   public function new() {
     super(Game.ME);
     createRootInLayers(Game.ME.scroller, Const.DP_BG);
+    createGroups();
+    createEntities();
   }
 
   /** TRUE if given coords are in level bounds **/
@@ -53,11 +69,73 @@ class Level extends dn.Process {
     invalidated = true;
   }
 
+  public function createGroups() {
+    collectibles = new Group<Collectible>();
+    enemies = new Group<Enemy>();
+  }
+
+  public function createEntities() {}
+
   // Level Collisions
 
   public function hasAnyCollision(x:Int, y:Int) {
     // TODO: Add in the collision code
     return false;
+  }
+
+  public function hasAnyEnemyCollision(cx:Int, cy:Int) {
+    for (enemy in enemies) {
+      if (enemy.cx == cx && enemy.cy == cy && enemy.isAlive()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public function getEnemyCollision(cx:Int, cy:Int) {
+    for (enemy in enemies) {
+      if (enemy.cx == cx && enemy.cy == cy && enemy.isAlive()) {
+        return enemy;
+      }
+    }
+    return null;
+  }
+
+  public function getCollectible(cx:Int, cy:Int) {
+    for (collectible in collectibles) {
+      if (collectible.cx == cx && collectible.cy == cy && collectible.isAlive()) {
+        return collectible;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Handles pausing the game
+   */
+  public function handlePause() {
+    if (game.ca.isKeyboardPressed(K.ESCAPE)) {
+      Assets.pauseIn.play();
+      this.pause();
+      scnPause = new Pause();
+    }
+  }
+
+  public function handleGameOver() {
+    if (player.isDead() && Game.ME.gameLives <= 0) {
+      this.pause();
+      new GameOver();
+    } else if (player.isDead()) {
+      Game.ME.gameLives--;
+      // Revive Player;
+      player.triggerInvincibility();
+      player.health = 3;
+    }
+  }
+
+  public function handleTimer() {
+    timer += Timer.elapsedTime;
+    game.invalidateHud();
   }
 
   function render() {
@@ -73,6 +151,13 @@ class Level extends dn.Process {
           g.beginFill(Color.randomColor(rnd(0, 1), 0.5, 0.4));
         g.drawRect(cx * Const.GRID, cy * Const.GRID, Const.GRID, Const.GRID);
       }
+  }
+
+  override function update() {
+    super.update();
+    handlePause();
+    handleGameOver();
+    handleTimer();
   }
 
   override function postUpdate() {

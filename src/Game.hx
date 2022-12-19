@@ -23,10 +23,12 @@ class Game extends dn.Process {
   /** UI **/
   public var hud:ui.Hud;
 
+  public var gameLives:Int = 3;
+
   public function new() {
     super(Main.ME);
     ME = this;
-    ca = Main.ME.controller.createAccess("game");
+    ca = Main.ME.controller.createAccess('game');
     ca.setLeftDeadZone(0.2);
     ca.setRightDeadZone(0.2);
     createRootInLayers(Main.ME.root, Const.DP_BG);
@@ -42,7 +44,7 @@ class Game extends dn.Process {
     hud.hide();
 
     Process.resizeAll();
-    trace(Lang.t._("Game is ready."));
+    trace(Lang.t._('Game is ready.'));
   }
 
   /**

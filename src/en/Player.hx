@@ -91,6 +91,7 @@ class Player extends BaseEnt {
     super.update();
     updateInvincibility();
     updateCollision();
+    updateMovement();
   }
 
   public function updateInvincibility() {
@@ -108,4 +109,31 @@ class Player extends BaseEnt {
   }
 
   public function updateCollision() {}
+
+  public function updateMovement() {
+    var left = ct.leftDown();
+    var right = ct.rightDown();
+
+    if (left || right) {
+      if (left) {
+        dx = -MOVE_SPD;
+      } else if (right) {
+        dx = MOVE_SPD;
+      }
+    }
+  }
+
+  public function triggerInvincibility() {
+    cd.setS('invincibleTime', INVINCIBLE_TIME);
+  };
+
+  override function takeDamage(value:Int = 1) {
+    if (!isInvincible) {
+      Game.ME.camera.shakeS(0.5, 0.5);
+      super.takeDamage(value);
+      triggerInvincibility();
+      this.knockback(0.1, 0.2);
+      Assets.damageSnd.play();
+    }
+  }
 }
